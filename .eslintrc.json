@@ -1,10 +1,16 @@
 {
   "env": {
     "browser": true,
-    "es2021": true
+    "es2021": true,
+    "jest/globals": true
   },
   "parser": "@typescript-eslint/parser",
-  "extends": ["next/core-web-vitals", "prettier", "plugin:@typescript-eslint/recommended"],
+  "extends": [
+    "next/core-web-vitals",
+    "prettier",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:jest/recommended"
+  ],
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
@@ -12,12 +18,35 @@
     "ecmaVersion": 12,
     "sourceType": "module"
   },
-  "plugins": ["react", "@typescript-eslint", "prettier"],
+  "plugins": ["react", "@typescript-eslint", "prettier", "jest"],
   "rules": {
     "prefer-const": "error",
     "require-jsdoc": "off",
     "react/react-in-jsx-scope": "off",
     "@typescript-eslint/no-unused-vars": "error",
-    "@typescript-eslint/no-explicit-any": "error"
+    "@typescript-eslint/no-explicit-any": "error",
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": "interface",
+        "format": ["StrictPascalCase"],
+        "prefix": ["I"]
+      },
+      {
+        "selector": ["typeAlias", "typeParameter"],
+        "format": ["StrictPascalCase"],
+        "prefix": ["T"]
+      },
+      {
+        "selector": "enum",
+        "format": ["StrictPascalCase"],
+        "prefix": ["E"]
+      },
+      {
+        "selector": ["variable"],
+        "format": ["camelCase", "UPPER_CASE", "snake_case", "PascalCase"],
+        "leadingUnderscore": "allow"
+      }
+    ]
   }
 }
