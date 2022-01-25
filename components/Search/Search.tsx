@@ -1,6 +1,27 @@
-const Search = () => {
+import { useCallback, useState } from 'react'
+import type { ChangeEvent, FormEvent } from 'react'
+
+type TSearchProps = {
+  doSearch?: (term: string) => void
+}
+
+const Search = (props: TSearchProps) => {
+  const { doSearch } = props
+
+  const [term, setTerm] = useState('')
+
+  const handleInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setTerm(event.target.value)
+  }, [])
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    doSearch?.(term)
+  }
+
   return (
-    <div data-testid="search" className="relative mt-6 max-w-lg mx-auto">
+    <form name="search-form" className="relative mt-6 max-w-lg mx-auto" onSubmit={handleSubmit}>
       <span className="absolute inset-y-0 left-0 pl-3 flex items-center">
         <svg className="h-5 w-5 text-gray-500" viewBox="0 0 24 24" fill="none">
           <path
@@ -15,10 +36,12 @@ const Search = () => {
 
       <input
         className="w-full border rounded-md pl-10 pr-4 py-2 focus:border-blue-500 focus:outline-none focus:shadow-outline"
-        type="text"
-        placeholder="Search"
+        type="search"
+        placeholder="Search watch"
+        value={term}
+        onChange={handleInput}
       />
-    </div>
+    </form>
   )
 }
 
