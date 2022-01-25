@@ -1,7 +1,7 @@
 import { screen, render, waitFor } from '@testing-library/react'
 import Home from '..'
 import { makeServer } from '@/miragejs/server'
-import { Server } from 'miragejs'
+import { Response, Server } from 'miragejs'
 
 const renderHome = () => {
   render(<Home />)
@@ -34,10 +34,31 @@ describe('Home', () => {
     })
   })
 
-  it.todo('should render the no products message')
-  it.todo('should render the Search component')
+  it('should render the "no products" message', async () => {
+    renderHome()
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { level: 4, name: /no products/i })).toBeInTheDocument()
+      expect(screen.queryByRole('heading', { level: 4, name: /error/i })).toBeNull()
+      expect(screen.queryAllByTestId('product-card')).toHaveLength(0)
+    })
+  })
+
+  it('should display error message when promise rejects', async () => {
+    server.get('products', () => {
+      return new Response(500)
+    })
+
+    renderHome()
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { level: 4, name: /error/i })).toBeInTheDocument()
+      expect(screen.queryByRole('heading', { level: 4, name: /no products/i })).toBeNull()
+      expect(screen.queryAllByTestId('product-card')).toHaveLength(0)
+    })
+  })
+
   it.todo('should filter the product list when a search is performed')
-  it.todo('should display error message when promise rejects')
   it.todo('should display the total quantity of products')
   it.todo('should display product (singular) when there is only 1 product')
 })
