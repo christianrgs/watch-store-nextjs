@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react'
 import type { ChangeEvent, FormEvent } from 'react'
 
 type TSearchProps = {
-  doSearch?: (term: string) => void
+  doSearch: (term: string) => void
 }
 
 const Search = (props: TSearchProps) => {
@@ -17,7 +17,7 @@ const Search = (props: TSearchProps) => {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    doSearch?.(term)
+    doSearch(term)
   }
 
   return (
