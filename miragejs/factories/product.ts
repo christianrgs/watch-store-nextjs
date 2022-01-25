@@ -30,6 +30,9 @@ const images = [
 
 const product = {
   product: Factory.extend({
+    id() {
+      return faker.fake('{{random.uuid}}')
+    },
     name() {
       return faker.fake('{{lorem.words}}')
     },
