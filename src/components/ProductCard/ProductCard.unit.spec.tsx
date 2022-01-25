@@ -2,8 +2,9 @@ import { screen, render, fireEvent } from '@testing-library/react'
 import ProductCard from './ProductCard'
 
 const product = {
+  id: '33b60271-b4d1-4b85-a960-cee6faa52bd0',
   name: 'Classic watch',
-  price: 123,
+  price: '123',
   image:
     'https://images.unsplash.com/photo-1495856458515-0637185db551?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80'
 }

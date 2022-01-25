@@ -29,7 +29,7 @@ const images = [
 ]
 
 const product = {
-  product: Factory.extend({
+  product: Factory.extend<IProduct>({
     id() {
       return faker.fake('{{datatype.uuid}}')
     },

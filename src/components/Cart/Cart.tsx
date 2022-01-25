@@ -1,8 +1,9 @@
 import CartItem from './CartItem'
 
 const product = {
+  id: '33b60271-b4d1-4b85-a960-cee6faa52bd0',
   name: 'Classic watch',
-  price: 123,
+  price: '123',
   image:
     'https://images.unsplash.com/photo-1495856458515-0637185db551?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80'
 }
@@ -37,7 +38,7 @@ const Cart = () => {
         </form>
       </div>
       <a className="flex items-center justify-center mt-4 px-3 py-2 bg-blue-600 text-white text-sm uppercase font-medium rounded hover:bg-blue-500 focus:outline-none focus:bg-blue-500">
-        <span>Chechout</span>
+        <span>Checkout</span>
         <svg
           className="h-5 w-5 mx-2"
           fill="none"

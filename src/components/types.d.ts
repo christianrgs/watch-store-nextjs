@@ -1,6 +1,6 @@
 interface IProduct {
-  id?: string
+  id: string
   name: string
-  price: number
+  price: string
   image: string
 }
