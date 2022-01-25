@@ -31,6 +31,7 @@ const CartItem = (props: TCartItemProps) => {
             src={product.image}
             alt={product.name}
             layout="fill"
+            priority
           />
         </div>
         <div className="mx-3">
