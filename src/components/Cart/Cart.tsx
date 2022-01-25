@@ -1,5 +1,12 @@
 import CartItem from './CartItem'
 
+const product = {
+  name: 'Classic watch',
+  price: 123,
+  image:
+    'https://images.unsplash.com/photo-1495856458515-0637185db551?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80'
+}
+
 const Cart = () => {
   return (
     <div className="fixed right-0 top-0 max-w-xs w-full h-full px-6 py-4 transition duration-300 transform overflow-y-auto bg-white border-l-2 border-gray-300">
@@ -20,7 +27,7 @@ const Cart = () => {
         </button>
       </div>
       <hr className="my-3" />
-      <CartItem />
+      <CartItem product={product} />
       <div className="mt-8">
         <form className="flex items-center justify-center">
           <input className="form-input w-48" type="text" placeholder="Add promocode" />
