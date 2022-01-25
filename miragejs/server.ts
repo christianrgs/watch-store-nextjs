@@ -4,6 +4,8 @@ import routes from './routes'
 import models from './models'
 import seeds from './seeds'
 
+export type TAppServer = Server<TServerModels>
+
 const config = (environment: string) => {
   const config = {
     environment,
@@ -17,5 +19,5 @@ const config = (environment: string) => {
 }
 
 export function makeServer({ environment = 'development' } = {}) {
-  return new Server(config(environment))
+  return new Server<TServerModels>(config(environment))
 }

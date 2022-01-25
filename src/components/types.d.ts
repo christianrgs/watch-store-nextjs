@@ -4,3 +4,7 @@ interface IProduct {
   price: string
   image: string
 }
+
+type TServerModels = {
+  product: IProduct
+}

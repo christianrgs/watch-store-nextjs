@@ -1,10 +1,10 @@
 import { useFetchProducts } from '../use-fetch-products'
-import { makeServer } from '@/miragejs/server'
-import { Response, Server } from 'miragejs'
+import { makeServer, TAppServer } from '@/miragejs/server'
+import { Response } from 'miragejs'
 import { renderHook } from '@testing-library/react-hooks'
 
 describe('Common Hooks > useFetchProducts', () => {
-  let server: Server
+  let server: TAppServer
 
   beforeEach(() => {
     server = makeServer({ environment: 'test' })
