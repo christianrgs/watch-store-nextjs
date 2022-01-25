@@ -10,9 +10,16 @@ const Search = (props: TSearchProps) => {
 
   const [term, setTerm] = useState('')
 
-  const handleInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setTerm(event.target.value)
-  }, [])
+  const handleInput = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setTerm(event.target.value)
+
+      if (!event.target.value) {
+        doSearch('')
+      }
+    },
+    [doSearch]
+  )
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()

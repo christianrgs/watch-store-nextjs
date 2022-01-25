@@ -1,14 +1,15 @@
-import { screen, render, waitFor } from '@testing-library/react'
+import { screen, render, waitFor, fireEvent } from '@testing-library/react'
 import Home from '..'
-import { makeServer } from '@/miragejs/server'
-import { Response, Server } from 'miragejs'
+import { makeServer, TAppServer } from '@/miragejs/server'
+import { Response } from 'miragejs'
+import userEvent from '@testing-library/user-event'
 
 const renderHome = () => {
   render(<Home />)
 }
 
 describe('Home', () => {
-  let server: Server
+  let server: TAppServer
 
   beforeEach(() => {
     server = makeServer({ environment: 'test' })
@@ -21,7 +22,11 @@ describe('Home', () => {
   it('should render Home', () => {
     renderHome()
 
+    const productListTitle = screen.getByRole('heading', { level: 3, name: /search term/i })
+
     expect(screen.getByTestId('home')).toBeInTheDocument()
+    expect(productListTitle).toBeInTheDocument()
+    expect(productListTitle.textContent).toBe('Watches')
   })
 
   it('should render the ProductCard component 10 times', async () => {
@@ -38,8 +43,11 @@ describe('Home', () => {
     renderHome()
 
     await waitFor(() => {
-      expect(screen.getByRole('heading', { level: 4, name: /no products/i })).toBeInTheDocument()
-      expect(screen.queryByRole('heading', { level: 4, name: /error/i })).toBeNull()
+      const noProductsMessage = screen.getByRole('heading', { level: 4, name: /no products/i })
+      const errorMessage = screen.queryByRole('heading', { level: 4, name: /error/i })
+
+      expect(noProductsMessage).toBeInTheDocument()
+      expect(errorMessage).toBeNull()
       expect(screen.queryAllByTestId('product-card')).toHaveLength(0)
     })
   })
@@ -52,13 +60,44 @@ describe('Home', () => {
     renderHome()
 
     await waitFor(() => {
-      expect(screen.getByRole('heading', { level: 4, name: /error/i })).toBeInTheDocument()
-      expect(screen.queryByRole('heading', { level: 4, name: /no products/i })).toBeNull()
+      const errorMessage = screen.getByRole('heading', { level: 4, name: /error/i })
+      const noProductsMessage = screen.queryByRole('heading', { level: 4, name: /no products/i })
+
+      expect(errorMessage).toBeInTheDocument()
+      expect(noProductsMessage).toBeNull()
       expect(screen.queryAllByTestId('product-card')).toHaveLength(0)
     })
   })
 
-  it.todo('should filter the product list when a search is performed')
+  it('should filter the product list when a search is performed', async () => {
+    const searchTerm = 'smart watch'
+
+    server.createList('product', 3)
+    server.create('product', {
+      name: 'Smart Watch'
+    })
+
+    renderHome()
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('product-card')).toHaveLength(4)
+    })
+
+    const input = screen.getByRole('searchbox')
+    const form = screen.getByRole('form')
+
+    userEvent.type(input, searchTerm)
+    fireEvent.submit(form)
+
+    await waitFor(() => {
+      const productListTitle = screen.getByRole('heading', { level: 3, name: /search term/i })
+
+      expect(productListTitle).toBeInTheDocument()
+      expect(productListTitle.textContent).toBe(`Results for: ${searchTerm}`)
+      expect(screen.getAllByTestId('product-card')).toHaveLength(1)
+    })
+  })
+
   it.todo('should display the total quantity of products')
   it.todo('should display product (singular) when there is only 1 product')
 })

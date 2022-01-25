@@ -16,6 +16,10 @@ const renderProductCard = () => {
 }
 
 describe('ProductCard', () => {
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
   it('should render ProductCard', () => {
     renderProductCard()
 
