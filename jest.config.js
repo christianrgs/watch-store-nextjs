@@ -6,5 +6,8 @@ module.exports = {
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }]
   },
-  collectCoverageFrom: ['<rootDir>/src/**/*.+(js|jsx|ts|tsx)']
+  collectCoverageFrom: ['<rootDir>/src/**/*.+(js|jsx|ts|tsx)'],
+  moduleNameMapper: {
+    '^@/miragejs/(.*)$': '<rootDir>/miragejs/$1'
+  }
 }
