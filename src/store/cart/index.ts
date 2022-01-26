@@ -13,21 +13,36 @@ export const useCartStore = create<IUseCartStore>(set => {
   return {
     state: initialState,
     actions: {
-      toggle() {
-        setState(({ state }) => {
-          state.open = !state.open
-        })
-      },
       reset() {
         setState(store => {
           store.state = initialState
+        })
+      },
+      toggle() {
+        setState(({ state }) => {
+          state.open = !state.open
         })
       },
       addProduct(product: IProduct) {
         setState(({ state }) => {
           if (!state.products.includes(product)) {
             state.products.push(product)
+            state.open = true
           }
+        })
+      },
+      removeProduct(product: IProduct) {
+        setState(({ state }) => {
+          if (state.products.includes(product)) {
+            state.products = state.products.filter(({ id }) => {
+              return id !== product.id
+            })
+          }
+        })
+      },
+      removeAllProducts() {
+        setState(({ state }) => {
+          state.products = initialState.products
         })
       }
     }

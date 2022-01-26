@@ -7,6 +7,8 @@ export interface IUseCartActions {
   reset: () => void
   toggle: () => void
   addProduct: (product: IProduct) => void
+  removeProduct: (product: IProduct) => void
+  removeAllProducts: () => void
 }
 
 export interface IUseCartStore {
