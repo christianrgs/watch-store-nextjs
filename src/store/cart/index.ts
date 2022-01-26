@@ -9,6 +9,9 @@ const initialState: IUseCartState = {
 
 export const useCartStore = create<IUseCartStore>(set => {
   const setState = (callback: (store: IUseCartStore) => void) => set(produce(callback))
+  const isProductAlreadyInTheCart = (state: IUseCartState, product: IProduct) => {
+    return state.products.some(({ id }) => id === product.id)
+  }
 
   return {
     state: initialState,
@@ -25,7 +28,7 @@ export const useCartStore = create<IUseCartStore>(set => {
       },
       addProduct(product: IProduct) {
         setState(({ state }) => {
-          if (!state.products.includes(product)) {
+          if (!isProductAlreadyInTheCart(state, product)) {
             state.products.push(product)
             state.open = true
           }
@@ -33,7 +36,7 @@ export const useCartStore = create<IUseCartStore>(set => {
       },
       removeProduct(product: IProduct) {
         setState(({ state }) => {
-          if (state.products.includes(product)) {
+          if (isProductAlreadyInTheCart(state, product)) {
             state.products = state.products.filter(({ id }) => {
               return id !== product.id
             })

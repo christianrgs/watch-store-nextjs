@@ -1,9 +1,31 @@
+import { useCallback, useMemo } from 'react'
 import CartItem from './CartItem'
 import { useCartStore } from 'store/cart'
 
 const Cart = () => {
   const { open, products } = useCartStore(store => store.state)
   const toggle = useCartStore(store => store.actions.toggle)
+  const removeAll = useCartStore(store => store.actions.removeAllProducts)
+
+  const hasProducts = useMemo(() => !!products.length, [products.length])
+
+  const renderRemoveAllItemsButton = useCallback(() => {
+    if (products.length > 1) {
+      return (
+        <div className="flex justify-end mb-2">
+          <button
+            data-testid="remove-all"
+            className="w-32 px-1 py-2 bg-stone-600 text-sm font-medium text-white rounded hover:bg-stone-500 focus:outline-none focus:bg-stone-500"
+            onClick={() => removeAll()}
+          >
+            Remove all items
+          </button>
+        </div>
+      )
+    }
+
+    return null
+  }, [products.length, removeAll])
 
   return (
     <div
@@ -33,31 +55,32 @@ const Cart = () => {
         </button>
       </div>
       <hr className="my-3" />
+      {renderRemoveAllItemsButton()}
+      {!hasProducts ? (
+        <h3 className="text-center font-bold text-blue-600">There are no items in the cart</h3>
+      ) : null}
       {products.map(product => {
         return <CartItem key={product.id} product={product} />
       })}
-      <div className="mt-8">
-        <form className="flex items-center justify-center">
-          <input className="form-input w-48" type="text" placeholder="Add promocode" />
-          <button className="ml-3 flex items-center px-3 py-2 bg-blue-600 text-white text-sm uppercase font-medium rounded hover:bg-blue-500 focus:outline-none focus:bg-blue-500">
-            <span>Apply</span>
-          </button>
-        </form>
-      </div>
-      <a className="flex items-center justify-center mt-4 px-3 py-2 bg-blue-600 text-white text-sm uppercase font-medium rounded hover:bg-blue-500 focus:outline-none focus:bg-blue-500">
-        <span>Checkout</span>
-        <svg
-          className="h-5 w-5 mx-2"
-          fill="none"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
+      {hasProducts ? (
+        <a
+          data-testid="checkout"
+          className="flex items-center justify-center mt-4 px-3 py-2 bg-blue-600 text-white text-sm uppercase font-medium rounded hover:bg-blue-500 focus:outline-none focus:bg-blue-500"
         >
-          <path d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-        </svg>
-      </a>
+          <span>Checkout</span>
+          <svg
+            className="h-5 w-5 mx-2"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+          </svg>
+        </a>
+      ) : null}
     </div>
   )
 }
