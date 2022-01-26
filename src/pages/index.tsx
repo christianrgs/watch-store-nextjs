@@ -3,11 +3,13 @@ import type { NextPage } from 'next'
 import ProductCard from 'components/ProductCard'
 import Search from 'components/Search'
 import { useFetchProducts } from 'common/hooks/use-fetch-products'
+import { useCartStore } from 'store/cart'
 
 const Home: NextPage = () => {
   const { products, error } = useFetchProducts()
   const [term, setTerm] = useState('')
   const [localProducts, setLocalProducts] = useState<IProduct[]>([])
+  const addToCart = useCartStore(store => store.actions.addProduct)
 
   const renderErrorMessage = useCallback(() => {
     if (!error) {
@@ -23,9 +25,9 @@ const Home: NextPage = () => {
     }
 
     return localProducts.map(product => (
-      <ProductCard key={product.id} product={product} addToCart={product => console.log(product)} />
+      <ProductCard key={product.id} product={product} addToCart={addToCart} />
     ))
-  }, [error, localProducts])
+  }, [addToCart, error, localProducts])
 
   const renderProductListTitle = useCallback(() => {
     return term ? `Results for: ${term}` : 'Watches'

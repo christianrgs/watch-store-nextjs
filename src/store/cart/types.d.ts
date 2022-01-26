@@ -1,8 +1,15 @@
+export interface IUseCartState {
+  open: boolean
+  products: IProduct[]
+}
+
+export interface IUseCartActions {
+  reset: () => void
+  toggle: () => void
+  addProduct: (product: IProduct) => void
+}
+
 export interface IUseCartStore {
-  state: {
-    open: boolean
-  }
-  actions: {
-    toggle: () => void
-  }
+  state: IUseCartState
+  actions: IUseCartActions
 }

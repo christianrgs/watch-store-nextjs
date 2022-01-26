@@ -1,19 +1,26 @@
+import { makeServer, TAppServer } from '@/miragejs/server'
 import { screen, render, fireEvent } from '@testing-library/react'
 import CartItem from '../CartItem'
 
-const product = {
-  id: '33b60271-b4d1-4b85-a960-cee6faa52bd0',
-  name: 'Classic watch',
-  price: '123',
-  image:
-    'https://images.unsplash.com/photo-1495856458515-0637185db551?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80'
-}
-
-const renderCartItem = () => {
-  render(<CartItem product={product} />)
-}
-
 describe('CartItem', () => {
+  let server: TAppServer
+
+  beforeEach(() => {
+    server = makeServer({ environment: 'test' })
+  })
+
+  afterEach(() => {
+    server.shutdown()
+  })
+
+  const renderCartItem = () => {
+    const product = server.create('product')
+
+    render(<CartItem product={product} />)
+
+    return { product }
+  }
+
   it('should render CartItem', () => {
     renderCartItem()
 
@@ -21,7 +28,7 @@ describe('CartItem', () => {
   })
 
   it('should display proper content', () => {
-    renderCartItem()
+    const { product } = renderCartItem()
 
     expect(screen.getByText(new RegExp(product.name, 'i'))).toBeInTheDocument()
     expect(screen.getByText(new RegExp(product.price.toString(), 'i'))).toBeInTheDocument()

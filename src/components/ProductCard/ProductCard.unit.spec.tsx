@@ -1,24 +1,28 @@
+import { makeServer, TAppServer } from '@/miragejs/server'
 import { screen, render, fireEvent } from '@testing-library/react'
 import ProductCard from './ProductCard'
 
-const product = {
-  id: '33b60271-b4d1-4b85-a960-cee6faa52bd0',
-  name: 'Classic watch',
-  price: '123',
-  image:
-    'https://images.unsplash.com/photo-1495856458515-0637185db551?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80'
-}
-
 const addToCart = jest.fn()
 
-const renderProductCard = () => {
-  render(<ProductCard product={product} addToCart={addToCart} />)
-}
-
 describe('ProductCard', () => {
+  let server: TAppServer
+
+  beforeEach(() => {
+    server = makeServer({ environment: 'test' })
+  })
+
   afterEach(() => {
+    server.shutdown()
     jest.clearAllMocks()
   })
+
+  const renderProductCard = () => {
+    const product = server.create('product')
+
+    render(<ProductCard product={product} addToCart={addToCart} />)
+
+    return { product }
+  }
 
   it('should render ProductCard', () => {
     renderProductCard()
@@ -27,7 +31,7 @@ describe('ProductCard', () => {
   })
 
   it('should display proper content', () => {
-    renderProductCard()
+    const { product } = renderProductCard()
 
     expect(screen.getByText(new RegExp(product.name, 'i'))).toBeInTheDocument()
     expect(screen.getByText(new RegExp(product.price.toString(), 'i'))).toBeInTheDocument()
@@ -37,7 +41,7 @@ describe('ProductCard', () => {
   })
 
   it('should call props addToCart when button gets clicked', () => {
-    renderProductCard()
+    const { product } = renderProductCard()
 
     const button = screen.getByRole('button')
 

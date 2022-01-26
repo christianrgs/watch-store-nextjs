@@ -1,16 +1,8 @@
 import CartItem from './CartItem'
 import { useCartStore } from 'store/cart'
 
-const product = {
-  id: '33b60271-b4d1-4b85-a960-cee6faa52bd0',
-  name: 'Classic watch',
-  price: '123',
-  image:
-    'https://images.unsplash.com/photo-1495856458515-0637185db551?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80'
-}
-
 const Cart = () => {
-  const open = useCartStore(store => store.state.open)
+  const { open, products } = useCartStore(store => store.state)
   const toggle = useCartStore(store => store.actions.toggle)
 
   return (
@@ -36,7 +28,9 @@ const Cart = () => {
         </button>
       </div>
       <hr className="my-3" />
-      <CartItem product={product} />
+      {products.map(product => {
+        return <CartItem key={product.id} product={product} />
+      })}
       <div className="mt-8">
         <form className="flex items-center justify-center">
           <input className="form-input w-48" type="text" placeholder="Add promocode" />
