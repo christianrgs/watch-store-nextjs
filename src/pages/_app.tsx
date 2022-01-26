@@ -2,6 +2,7 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import Cart from 'components/Cart'
+import { useCartStore } from 'store/cart'
 
 if (process.env.NODE_ENV === 'development') {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -9,6 +10,8 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const toggleCart = useCartStore(store => store.actions.toggle)
+
   return (
     <div className="bg-white">
       <header>
@@ -40,7 +43,10 @@ function MyApp({ Component, pageProps }: AppProps) {
               Watch Store
             </div>
             <div className="flex items-center justify-end w-full">
-              <button className="text-gray-600 focus:outline-none mx-4 sm:mx-0">
+              <button
+                className="text-gray-600 focus:outline-none mx-4 sm:mx-0"
+                onClick={() => toggleCart()}
+              >
                 <svg
                   className="h-5 w-5"
                   fill="none"
