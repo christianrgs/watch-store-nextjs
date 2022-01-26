@@ -22,7 +22,7 @@ describe('Home', () => {
   it('should render Home', () => {
     renderHome()
 
-    const productListTitle = screen.getByRole('heading', { level: 3, name: /search term/i })
+    const productListTitle = screen.getByRole('heading', { level: 3, name: /product list title/i })
 
     expect(screen.getByTestId('home')).toBeInTheDocument()
     expect(productListTitle).toBeInTheDocument()
@@ -90,7 +90,10 @@ describe('Home', () => {
     fireEvent.submit(form)
 
     await waitFor(() => {
-      const productListTitle = screen.getByRole('heading', { level: 3, name: /search term/i })
+      const productListTitle = screen.getByRole('heading', {
+        level: 3,
+        name: /product list title/i
+      })
 
       expect(productListTitle).toBeInTheDocument()
       expect(productListTitle.textContent).toBe(`Results for: ${searchTerm}`)
@@ -98,6 +101,48 @@ describe('Home', () => {
     })
   })
 
-  it.todo('should display the total quantity of products')
-  it.todo('should display product (singular) when there is only 1 product')
+  it('should display the total quantity of products', async () => {
+    server.createList('product', 10)
+
+    renderHome()
+
+    await waitFor(() => {
+      expect(screen.getByText(/10 products/i)).toBeInTheDocument()
+    })
+  })
+
+  it('should display product (singular) when there is only 1 product', async () => {
+    server.createList('product', 1)
+
+    renderHome()
+
+    await waitFor(() => {
+      expect(screen.getByText(/1 product$/i)).toBeInTheDocument()
+    })
+  })
+
+  it('should display proper quantity when product list is filtered', async () => {
+    const searchTerm = 'smart watch'
+
+    server.createList('product', 3)
+    server.create('product', {
+      name: 'Smart Watch'
+    })
+
+    renderHome()
+
+    await waitFor(() => {
+      expect(screen.getByText(/4 products/i)).toBeInTheDocument()
+    })
+
+    const input = screen.getByRole('searchbox')
+    const form = screen.getByRole('form')
+
+    userEvent.type(input, searchTerm)
+    fireEvent.submit(form)
+
+    await waitFor(() => {
+      expect(screen.getByText(/1 product$/i)).toBeInTheDocument()
+    })
+  })
 })

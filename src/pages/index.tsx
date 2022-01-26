@@ -27,6 +27,16 @@ const Home: NextPage = () => {
     ))
   }, [error, localProducts])
 
+  const renderProductListTitle = useCallback(() => {
+    return term ? `Results for: ${term}` : 'Watches'
+  }, [term])
+
+  const renderProductQuantity = useCallback(() => {
+    if (localProducts.length === 1) return '1 Product'
+
+    return `${localProducts.length} Products`
+  }, [localProducts])
+
   useEffect(() => {
     if (term) {
       setLocalProducts(
@@ -43,10 +53,10 @@ const Home: NextPage = () => {
     <main data-testid="home" className="my-8">
       <Search doSearch={term => setTerm(term)} />
       <div className="container mx-auto px-6">
-        <h3 title="search term" className="text-gray-700 text-2xl font-medium">
-          {term ? `Results for: ${term}` : 'Watches'}
+        <h3 title="product list title" className="text-gray-700 text-2xl font-medium">
+          {renderProductListTitle()}
         </h3>
-        <span className="mt-3 text-sm text-gray-500">200+ Products</span>
+        <span className="mt-3 text-sm text-gray-500">{renderProductQuantity()}</span>
         <div
           data-testid="product-list"
           className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-6"
