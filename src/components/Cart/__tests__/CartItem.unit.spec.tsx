@@ -1,6 +1,11 @@
 import { makeServer, TAppServer } from '@/miragejs/server'
 import { screen, render, fireEvent } from '@testing-library/react'
+import { renderHook } from '@testing-library/react-hooks'
+import { setAutoFreeze } from 'immer'
+import { useCartStore } from 'store/cart'
 import CartItem from '../CartItem'
+
+setAutoFreeze(false)
 
 describe('CartItem', () => {
   let server: TAppServer
@@ -10,6 +15,7 @@ describe('CartItem', () => {
   })
 
   afterEach(() => {
+    jest.clearAllMocks()
     server.shutdown()
   })
 
@@ -78,5 +84,20 @@ describe('CartItem', () => {
     expect(quantity.textContent).toBe('0')
     fireEvent.click(minusButton)
     expect(quantity.textContent).toBe('0')
+  })
+
+  it('should call removeProduct when remove button gets clicked', () => {
+    const { result } = renderHook(() => useCartStore())
+
+    const spy = jest.spyOn(result.current.actions, 'removeProduct')
+
+    const { product } = renderCartItem()
+
+    const button = screen.getByTestId('remove')
+
+    fireEvent.click(button)
+
+    expect(spy).toBeCalledTimes(1)
+    expect(spy).toBeCalledWith(product)
   })
 })

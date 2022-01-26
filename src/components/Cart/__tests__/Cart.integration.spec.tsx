@@ -23,6 +23,10 @@ describe('Cart', () => {
   afterEach(() => {
     server.shutdown()
     jest.clearAllMocks()
+
+    act(() => {
+      result.current.actions.reset()
+    })
   })
 
   it('should render Cart', () => {
@@ -38,11 +42,11 @@ describe('Cart', () => {
   })
 
   it('should remove css class "hidden" in the component when toggle cart open state', () => {
-    act(() => {
-      result.current.actions.toggle()
-    })
-
     render(<Cart />)
+
+    const button = screen.getByTestId('close-cart-button')
+
+    userEvent.click(button)
 
     expect(screen.getByTestId('cart')).not.toHaveClass('hidden')
   })
@@ -50,12 +54,10 @@ describe('Cart', () => {
   it('should call store toggle() twice', () => {
     render(<Cart />)
 
-    const button = screen.getByTestId('cart-close-button')
+    const button = screen.getByTestId('close-cart-button')
 
-    act(() => {
-      userEvent.click(button)
-      userEvent.click(button)
-    })
+    userEvent.click(button)
+    userEvent.click(button)
 
     expect(spy).toHaveBeenCalledTimes(2)
   })
@@ -72,5 +74,46 @@ describe('Cart', () => {
     render(<Cart />)
 
     expect(screen.getAllByTestId('cart-item')).toHaveLength(2)
+  })
+
+  it('should not display "remove all items" button when are less than 2 products', () => {
+    const [product1, product2] = server.createList('product', 2)
+
+    act(() => {
+      result.current.actions.addProduct(product1)
+    })
+
+    render(<Cart />)
+
+    expect(screen.getAllByTestId('cart-item')).toHaveLength(1)
+    expect(screen.queryByRole('button', { name: /remove all items/i })).toBeNull()
+
+    act(() => {
+      result.current.actions.addProduct(product2)
+    })
+
+    expect(screen.getAllByTestId('cart-item')).toHaveLength(2)
+    expect(screen.getByRole('button', { name: /remove all items/i })).toBeInTheDocument()
+  })
+
+  it('should remove all products when "remove all items" button gets clicked', () => {
+    const products = server.createList('product', 2)
+
+    act(() => {
+      for (const product of products) {
+        result.current.actions.addProduct(product)
+      }
+    })
+
+    render(<Cart />)
+
+    expect(screen.getAllByTestId('cart-item')).toHaveLength(2)
+
+    const button = screen.getByRole('button', { name: /remove all items/i })
+
+    userEvent.click(button)
+
+    expect(screen.queryAllByTestId('cart-item')).toHaveLength(0)
+    expect(screen.getByTestId('empty-cart-message')).toBeInTheDocument()
   })
 })
