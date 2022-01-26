@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import Cart from 'components/Cart'
