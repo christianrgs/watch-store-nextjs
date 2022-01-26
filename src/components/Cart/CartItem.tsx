@@ -1,27 +1,13 @@
 import Image from 'next/image'
-import { useCallback, useState } from 'react'
 import { useCartStore } from 'store/cart'
 
 type TCartItemProps = {
-  product: IProduct
+  product: ICartItem
 }
 
 const CartItem = (props: TCartItemProps) => {
   const { product } = props
-  const [quantity, setQuantity] = useState(1)
-  const removeProduct = useCartStore(store => store.actions.removeProduct)
-
-  const handleDecrease = useCallback(
-    () =>
-      setQuantity(prevQuantity => {
-        if (prevQuantity > 0) return prevQuantity - 1
-
-        return prevQuantity
-      }),
-    []
-  )
-
-  const handleIncrese = useCallback(() => setQuantity(prevQuantity => prevQuantity + 1), [])
+  const { removeProduct, increase, decrease } = useCartStore(store => store.actions)
 
   return (
     <div data-testid="cart-item" className="flex justify-between mt-6">
@@ -58,7 +44,7 @@ const CartItem = (props: TCartItemProps) => {
               <button
                 data-testid="decrease"
                 className="text-gray-500 focus:outline-none focus:text-gray-600"
-                onClick={handleDecrease}
+                onClick={() => decrease(product)}
               >
                 <svg
                   className="h-5 w-5"
@@ -73,12 +59,12 @@ const CartItem = (props: TCartItemProps) => {
                 </svg>
               </button>
               <span data-testid="cart-item-quantity" className="text-gray-700 mx-2">
-                {quantity}
+                {product.quantity}
               </span>
               <button
                 data-testid="increase"
                 className="text-gray-500 focus:outline-none focus:text-gray-600"
-                onClick={handleIncrese}
+                onClick={() => increase(product)}
               >
                 <svg
                   className="h-5 w-5"

@@ -1,6 +1,6 @@
 import { renderHook, act, RenderResult } from '@testing-library/react-hooks'
 import { makeServer, TAppServer } from '@/miragejs/server'
-import { useCartStore } from '.'
+import { useCartStore } from './CartStore'
 import { IUseCartStore } from './types'
 
 describe('Cart Store', () => {
@@ -79,7 +79,51 @@ describe('Cart Store', () => {
     })
 
     expect(result.current.state.products).toHaveLength(1)
-    expect(result.current.state.products).toEqual([product])
+    expect(result.current.state.products[0]).toEqual(product)
+  })
+
+  it('should assign 1 as initial quantity on product add()', () => {
+    const product = server.create('product')
+
+    act(() => {
+      result.current.actions.addProduct(product)
+    })
+
+    expect(result.current.state.products[0].quantity).toBe(1)
+  })
+
+  it('should increase quantity', () => {
+    const product = server.create('product')
+
+    act(() => {
+      result.current.actions.addProduct(product)
+      result.current.actions.increase(product)
+    })
+
+    expect(result.current.state.products[0].quantity).toBe(2)
+  })
+
+  it('should decrease quantity', () => {
+    const product = server.create('product')
+
+    act(() => {
+      result.current.actions.addProduct(product)
+      result.current.actions.decrease(product)
+    })
+
+    expect(result.current.state.products[0].quantity).toBe(0)
+  })
+
+  it('should NOT decrease below zero', () => {
+    const product = server.create('product')
+
+    act(() => {
+      result.current.actions.addProduct(product)
+      result.current.actions.decrease(product)
+      result.current.actions.decrease(product)
+    })
+
+    expect(result.current.state.products[0].quantity).toBe(0)
   })
 
   it('should remove a product from the cart', () => {

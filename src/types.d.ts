@@ -5,6 +5,10 @@ interface IProduct {
   image: string
 }
 
+interface ICartItem extends IProduct {
+  quantity: number
+}
+
 type TServerModels = {
   product: IProduct
 }
