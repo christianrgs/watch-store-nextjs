@@ -1,4 +1,5 @@
 import create from 'zustand'
+import produce from 'immer'
 import { IUseCartState, IUseCartStore } from './types'
 
 const initialState: IUseCartState = {
@@ -6,22 +7,29 @@ const initialState: IUseCartState = {
   products: []
 }
 
-const addProduct = (state: IUseCartState, product: IProduct) => {
-  const isProductAlreadyInTheCart = state.products.includes(product)
+export const useCartStore = create<IUseCartStore>(set => {
+  const setState = (callback: (store: IUseCartStore) => void) => set(produce(callback))
 
-  if (isProductAlreadyInTheCart) return state.products
-
-  return [...state.products, product]
-}
-
-export const useCartStore = create<IUseCartStore>(set => ({
-  state: initialState,
-  actions: {
-    reset: () => set(() => ({ state: { ...initialState } })),
-    toggle: () => set(store => ({ state: { ...store.state, open: !store.state.open } })),
-    addProduct: (product: IProduct) =>
-      set(store => ({
-        state: { ...store.state, open: true, products: addProduct(store.state, product) }
-      }))
+  return {
+    state: initialState,
+    actions: {
+      toggle() {
+        setState(({ state }) => {
+          state.open = !state.open
+        })
+      },
+      reset() {
+        setState(store => {
+          store.state = initialState
+        })
+      },
+      addProduct(product: IProduct) {
+        setState(({ state }) => {
+          if (!state.products.includes(product)) {
+            state.products.push(product)
+          }
+        })
+      }
+    }
   }
-}))
+})
